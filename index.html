@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>周长小达人 - 三年级数学学习</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #FFF8E7;
+            min-height: 100vh;
+            color: #333;
+            font-size: 16px;
+        }
+
+        :root {
+            --primary-green: #4CAF50;
+            --primary-blue: #2196F3;
+            --primary-orange: #FF9800;
+            --light-green: #E8F5E9;
+            --light-blue: #E3F2FD;
+            --light-orange: #FFF3E0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF9800, #FFC107);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            min-width: 80px;
+            cursor: pointer;
+        }
+
+        .nav-item.active { color: var(--primary-green); }
+        .nav-item img { width: 32px; height: 32px; margin-bottom: 5px; }
+        .nav-item span { font-size: 14px; }
+
+        .main-content { padding: 20px; padding-bottom: 100px; }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            min-width: 44px;
+            min-height: 44px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), #45a049);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .btn-orange {
+            background: linear-gradient(135deg, var(--primary-orange), #f57c00);
+            color: white;
+        }
+
+        .btn-group { display: flex; gap: 12px; margin-top: 15px; }
+        .btn-group.center { justify-content: center; }
+
+        .shape-area {
+            background: var(--light-blue);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
+            margin-bottom: 15px;
+        }
+
+        .number-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 20px;
+            text-align: center;
+            border: 2px solid #DDD;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .number-input:focus { border-color: var(--primary-green); }
+
+        .answer-display {
+            background: var(--light-green);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .answer-correct { color: var(--primary-green); font-size: 24px; font-weight: bold; }
+        .answer-wrong { color: #f44336; font-size: 24px; font-weight: bold; }
+        .answer-info { font-size: 16px; color: #666; margin-top: 10px; }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #E0E0E0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-blue));
+            border-radius: 6px;
+            transition: width 0.5s;
+        }
+
+        .achievement-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: var(--light-orange);
+            border-radius: 16px;
+            min-width: 100px;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+
+        .achievement-badge.locked { opacity: 0.4; filter: grayscale(1); }
+
+        .step-card {
+            background: var(--light-green);
+            border-left: 4px solid var(--primary-green);
+            border-radius: 0 12px 12px 0;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .step-card h4 { font-size: 16px; color: var(--primary-green); margin-bottom: 5px; }
+        .step-card p { font-size: 14px; color: #666; }
+
+        .grid-paper {
+            background-image: 
+                linear-gradient(to right, #DDD 1px, transparent 1px),
+                linear-gradient(to bottom, #DDD 1px, transparent 1px);
+            background-size: 30px 30px;
+            border-radius: 12px;
+            padding: 10px;
+            min-height: 200px;
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-radius: 16px;
+            padding: 20px;
+            min-width: 120px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid #4CAF50;
+        }
+
+        .level-card:hover:not(.locked) {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .level-card.locked {
+            background: #F5F5F5;
+            border-color: #DDD;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .level-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .level-number {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .level-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .level-stars {
+            font-size: 16px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-bounce { animation: bounce 0.5s ease-in-out; }
+
+        @media (max-width: 480px) {
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📐 周长小达人</h1>
+        <p>三年级数学学习之旅</p>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <!-- 首页/探索页 -->
+        <div id="explorePage">
+            <div class="card">
+                <div class="card-title">
+                    <span>🌟</span>
+                    <span>什么是周长？</span>
+                </div>
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <svg width="200" height="100">
+                        <path d="M100 10 Q150 30 130 60 Q140 80 100 90 Q60 80 70 60 Q50 30 100 10" 
+                              fill="#4CAF50" fill-opacity="0.6" stroke="#2E7D32" stroke-width="2"/>
+                        <text x="100" y="105" text-anchor="middle" font-size="12" fill="#666">树叶的周长</text>
+                    </svg>
+                </div>
+                <p style="font-size: 16px; line-height: 1.6; color: #666; margin-bottom: 15px;">
+                    <strong>周长就是图形一周的长度！</strong><br><br>
+                    就像小蚂蚁沿着树叶的边缘爬一圈，爬过的总距离就是树叶的周长。
+                    数学书封面一圈的长度，也是封面的周长。
+                </p>
+                <div class="step-card">
+                    <h4>📝 学习目标</h4>
+                    <p>1. 认识什么是周长</p>
+                    <p>2. 学会计算各种图形的周长</p>
+                    <p>3. 会用多种方法计算周长</p>
+                </div>
+            </div>
+
+            <!-- 图形切换区域 -->
+            <div class="card">
+                <div class="card-title">
+                    <span>📐</span>
+                    <span>周长知识点</span>
+                </div>
+                
+                <!-- 图形选择按钮 -->
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn btn-primary active-graph" onclick="showGraph('square')">📦 正方形</button>
+                    <button class="btn btn-secondary" onclick="showGraph('rectangle')">📕 长方形</button>
+                    <button class="btn btn-secondary" onclick="showGraph('triangle')">🔺 三角形</button>
+                    <button class="btn btn-secondary" onclick="showGraph('trapezoid')">⬜ 梯形</button>
+                    <button class="btn btn-secondary" onclick="showGraph('irregular')">🍃 不规则</button>
+                </div>
+
+                <!-- 图形展示区域 -->
+                <div id="graphDisplay" class="shape-area">
+                    <!-- 正方形 -->
+                    <div id="graphSquare">
+                        <svg width="140" height="140">
+                            <rect x="10" y="10" width="120" height="120" fill="#FF9800" fill-opacity="0.3" stroke="#E65100" stroke-width="2"/>
+                            <text x="70" y="75" text-anchor="middle" font-size="18" fill="#333">边长=4cm</text>
+                        </svg>
+                    </div>
+                    <!-- 长方形 -->
+                    <div id="graphRectangle" style="display: none;">
+                        <svg width="180" height="120">
+                            <rect x="10" y="20" width="120" height="60" fill="#2196F3" fill-opacity="0.3" stroke="#1565C0" stroke-width="2"/>
+                            <text x="70" y="8" text-anchor="middle" font-size="12" fill="#333">长=6cm</text>
+                            <text x="3" y="50" text-anchor="middle" font-size="12" fill="#333">宽=3cm</text>
+                        </svg>
+                    </div>
+                    <!-- 三角形 -->
+                    <div id="graphTriangle" style="display: none;">
+                        <svg width="160" height="120">
+                            <polygon points="80,10 20,100 140,100" fill="#9C27B0" fill-opacity="0.3" stroke="#7B1FA2" stroke-width="2"/>
+                            <text x="80" y="25" text-anchor="middle" font-size="12" fill="#333">边a=6cm</text>
+                            <text x="35" y="80" text-anchor="middle" font-size="12" fill="#333">边b=5cm</text>
+                            <text x="125" y="80" text-anchor="middle" font-size="12" fill="#333">边c=5cm</text>
+                        </svg>
+                    </div>
+                    <!-- 梯形 -->
+                    <div id="graphTrapezoid" style="display: none;">
+                        <svg width="180" height="120">
+                            <polygon points="30,100 50,30 130,30 150,100" fill="#4CAF50" fill-opacity="0.3" stroke="#2E7D32" stroke-width="2"/>
+                            <text x="90" y="15" text-anchor="middle" font-size="12" fill="#333">上底=8cm</text>
+                            <text x="90" y="115" text-anchor="middle" font-size="12" fill="#333">下底=12cm</text>
+                            <text x="25" y="65" text-anchor="middle" font-size="12" fill="#333">腰a=7cm</text>
+                            <text x="155" y="65" text-anchor="middle" font-size="12" fill="#333">腰b=7cm</text>
+                        </svg>
+                    </div>
+                    <!-- 不规则图形 -->
+                    <div id="graphIrregular" style="display: none;">
+                        <svg width="180" height="120">
+                            <path d="M20 80 Q40 20 80 30 Q120 20 140 50 Q160 80 130 100 Q80 110 40 90 Z" 
+                                  fill="#FF5722" fill-opacity="0.3" stroke="#E64A19" stroke-width="2"/>
+                            <text x="90" y="110" text-anchor="middle" font-size="12" fill="#666">树叶形状</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 公式和示例区域 -->
+                <div id="formulaDisplay">
+                    <!-- 正方形公式 -->
+                    <div id="formulaSquare">
+                        <div style="background: #FFF3E0; border-radius: 12px; padding: 15px;">
+                            <p style="font-size: 16px; color: #333; font-weight: bold; margin-bottom: 10px;">🔹 周长公式：</p>
+                            <div style="font-family: monospace; font-size: 16px; line-height: 1.8; text-align: center;">
+                                <p>周长 = 边长 × 4</p>
+                                <p style="color: #E65100;">4 × 4 = <strong>16厘米</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 长方形公式 -->
+                    <div id="formulaRectangle" style="display: none;">
+                        <div style="background: #E3F2FD; border-radius: 12px; padding: 15px;">
+                            <p style="font-size: 16px; color: #333; font-weight: bold; margin-bottom: 10px;">🔹 周长公式：</p>
+                            <div style="font-family: monospace; font-size: 14px; line-height: 1.8;">
+                                <p>方法1：(长 + 宽) × 2</p>
+                                <p style="padding-left: 20px; color: #1565C0;">(6 + 3) × 2 = <strong>18厘米</strong></p>
+                                <p>方法2：长×2 + 宽×2</p>
+                                <p style="padding-left: 20px; color: #1565C0;">6×2 + 3×2 = <strong>18厘米</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 三角形公式 -->
+                    <div id="formulaTriangle" style="display: none;">
+                        <div style="background: #F3E5F5; border-radius: 12px; padding: 15px;">
+                            <p style="font-size: 16px; color: #333; font-weight: bold; margin-bottom: 10px;">🔹 周长公式：</p>
+                            <div style="font-family: monospace; font-size: 16px; line-height: 1.8; text-align: center;">
+                                <p>周长 = 边a + 边b + 边c</p>
+                                <p style="color: #7B1FA2;">6 + 5 + 5 = <strong>16厘米</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 梯形公式 -->
+                    <div id="formulaTrapezoid" style="display: none;">
+                        <div style="background: #E8F5E9; border-radius: 12px; padding: 15px;">
+                            <p style="font-size: 16px; color: #333; font-weight: bold; margin-bottom: 10px;">🔹 周长公式：</p>
+                            <div style="font-family: monospace; font-size: 16px; line-height: 1.8; text-align: center;">
+                                <p>周长 = 上底 + 下底 + 腰a + 腰b</p>
+                                <p style="color: #2E7D32;">8 + 12 + 7 + 7 = <strong>34厘米</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 不规则图形计算方法 -->
+                    <div id="formulaIrregular" style="display: none;">
+                        <div style="background: #FFECB3; border-radius: 12px; padding: 15px;">
+                            <p style="font-size: 16px; color: #333; font-weight: bold; margin-bottom: 10px;">🔹 计算方法：</p>
+                            <div style="font-size: 16px; line-height: 1.8; text-align: center; color: #E64A19;">
+                                <p>用细线围绕图形一周，</p>
+                                <p>然后用直尺测量细线的长度，</p>
+                                <p>细线的长度就是图形的周长。</p>
+                            </div>
+                            <div style="margin-top: 15px; text-align: center;">
+                                <svg width="160" height="60">
+                                    <path d="M10 30 Q40 10 80 30 T150 30" stroke="#E64A19" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+                                    <text x="80" y="55" text-anchor="middle" font-size="12" fill="#E64A19">✂️ 细线测量法</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>🎮</span>
+                    <span>开始闯关</span>
+                </div>
+                <p style="font-size: 16px; color: #666; margin-bottom: 15px;">
+                    点击下方按钮开始你的周长学习之旅吧！由易到难，逐步挑战！
+                </p>
+                <button class="btn btn-primary" style="width: 100%;" onclick="navigateTo('challenge')">
+                    🚀 开始挑战
+                </button>
+            </div>
+        </div>
+
+        <!-- 挑战页 -->
+        <div id="challengePage" style="display: none;">
+            <!-- 关卡选择页面 -->
+            <div id="levelSelect" class="card">
+                <div class="card-title">
+                    <span>🗺️</span>
+                    <span>魔法地图</span>
+                </div>
+                <p style="font-size: 16px; color: #666; margin-bottom: 20px; text-align: center;">
+                    小探险家，快来收集周长宝石，修复魔法地图吧！✨
+                </p>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+                    <div class="level-card" id="level1" onclick="startLevel(1)">
+                        <div class="level-icon">🏰</div>
+                        <div class="level-number">第1关</div>
+                        <div class="level-name">周长初识</div>
+                        <div class="level-stars">⭐⭐⭐</div>
+                    </div>
+                    <div class="level-card locked" id="level2" onclick="startLevel(2)">
+                        <div class="level-icon">🏯</div>
+                        <div class="level-number">第2关</div>
+                        <div class="level-name">正方形秘境</div>
+                        <div class="level-stars">🔒</div>
+                    </div>
+                    <div class="level-card locked" id="level3" onclick="startLevel(3)">
+                        <div class="level-icon">🏠</div>
+                        <div class="level-number">第3关</div>
+                        <div class="level-name">长方形迷宫</div>
+                        <div class="level-stars">🔒</div>
+                    </div>
+                    <div class="level-card locked" id="level4" onclick="startLevel(4)">
+                        <div class="level-icon">🌲</div>
+                        <div class="level-number">第4关</div>
+                        <div class="level-name">图形森林</div>
+                        <div class="level-stars">🔒</div>
+                    </div>
+                    <div class="level-card locked" id="level5" onclick="startLevel(5)">
+                        <div class="level-icon">⭐</div>
+                        <div class="level-number">第5关</div>
+                        <div class="level-name">宝石神殿</div>
+                        <div class="level-stars">🔒</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 游戏页面 -->
+            <div id="gameArea" style="display: none;">
+                <div class="card">
+                    <div class="card-title">
+                        <span id="levelIcon">🏰</span>
+                        <span id="levelTitle">第1关：周长初识</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="challengeProgress" style="width: 0%;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span style="color: #666;">题目 <span id="currentQuestion">1</span> / <span id="totalQuestions">8</span></span>
+                        <span id="fairyHint" style="display: none; color: #FF9800; font-size: 14px;">🧚 小精灵提示已开启</span>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 5px;">
+                        <span id="star1" style="font-size: 24px;">⭐</span>
+                        <span id="star2" style="font-size: 24px;">⭐</span>
+                        <span id="star3" style="font-size: 24px;">⭐</span>
+                    </div>
+                </div>
+
+                <!-- 小精灵提示 -->
+                <div id="fairyPopup" style="display: none;" class="card">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <span style="font-size: 40px;">🧚</span>
+                        <div>
+                            <p style="font-weight: bold; color: #FF9800;">小精灵提示</p>
+                            <p style="font-size: 14px; color: #666;">遇到困难了吗？让我来帮帮你！</p>
+                        </div>
+                    </div>
+                    <div id="fairyMessage" style="background: #FFF3E0; padding: 15px; border-radius: 12px; font-size: 16px;"></div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="closeFairyHint()">知道了！</button>
+                </div>
+
+                <!-- 题目区域 -->
+                <div class="card" id="questionCard">
+                <!-- 题目模板1 -->
+                <div id="q1" class="question">
+                    <div class="card-title">
+                        <span>🌿</span>
+                        <span>第1题</span>
+                    </div>
+                    <p class="question-content" style="font-size: 18px; margin-bottom: 15px; text-align: center;"></p>
+                    <div class="question-image" style="display: none; margin-bottom: 15px;"></div>
+                    <div class="answer-area"></div>
+                    <div id="q1Result" style="display: none;" class="answer-display"></div>
+                </div>
+
+                <!-- 题目模板2 -->
+                <div id="q2" class="question" style="display: none;">
+                    <div class="card-title">
+                        <span>📦</span>
+                        <span>第2题</span>
+                    </div>
+                    <p class="question-content" style="font-size: 18px; margin-bottom: 15px; text-align: center;"></p>
+                    <div class="question-image" style="display: none; margin-bottom: 15px;"></div>
+                    <div class="answer-area"></div>
+                    <div id="q2Result" style="display: none;" class="answer-display"></div>
+                </div>
+
+                <!-- 题目模板3 -->
+                <div id="q3" class="question" style="display: none;">
+                    <div class="card-title">
+                        <span>📕</span>
+                        <span>第3题</span>
+                    </div>
+                    <p class="question-content" style="font-size: 18px; margin-bottom: 15px; text-align: center;"></p>
+                    <div class="question-image" style="display: none; margin-bottom: 15px;"></div>
+                    <div class="answer-area"></div>
+                    <div id="q3Result" style="display: none;" class="answer-display"></div>
+                </div>
+
+                <!-- 题目模板4 -->
+                <div id="q4" class="question" style="display: none;">
+                    <div class="card-title">
+                        <span>📊</span>
+                        <span>第4题</span>
+                    </div>
+                    <p class="question-content" style="font-size: 18px; margin-bottom: 15px; text-align: center;"></p>
+                    <div class="question-image" style="display: none; margin-bottom: 15px;"></div>
+                    <div class="answer-area"></div>
+                    <div id="q4Result" style="display: none;" class="answer-display"></div>
+                </div>
+
+                <!-- 题目模板5 -->
+                <div id="q5" class="question" style="display: none;">
+                    <div class="card-title">
+                        <span>🏀</span>
+                        <span>第5题</span>
+                    </div>
+                    <p class="question-content" style="font-size: 18px; margin-bottom: 15px; text-align: center;"></p>
+                    <div class="question-image" style="display: none; margin-bottom: 15px;"></div>
+                    <div class="answer-area"></div>
+                    <div id="q5Result" style="display: none;" class="answer-display"></div>
+                </div>
+
+                <!-- 题目模板6 -->
+                <div id="q6" class="question" style="display: none;">
+                    <div class="card-title">
+                        <span>🏠</span>
+                        <span>第6题</span>
+                    </div>
+                    <p class="question-content" style="font-size: 18px; margin-bottom: 15px; text-align: center;"></p>
+                    <div class="question-image" style="display: none; margin-bottom: 15px;"></div>
+                    <div class="answer-area"></div>
+                    <div id="q6Result" style="display: none;" class="answer-display"></div>
+                </div>
+
+                <!-- 题目模板7 -->
+                <div id="q7" class="question" style="display: none;">
+                    <div class="card-title">
+                        <span>🔍</span>
+                        <span>第7题</span>
+                    </div>
+                    <p class="question-content" style="font-size: 18px; margin-bottom: 15px; text-align: center;"></p>
+                    <div class="question-image" style="display: none; margin-bottom: 15px;"></div>
+                    <div class="answer-area"></div>
+                    <div id="q7Result" style="display: none;" class="answer-display"></div>
+                </div>
+
+                <!-- 题目模板8 -->
+                <div id="q8" class="question" style="display: none;">
+                    <div class="card-title">
+                        <span>⚖️</span>
+                        <span>第8题</span>
+                    </div>
+                    <p class="question-content" style="font-size: 18px; margin-bottom: 15px; text-align: center;"></p>
+                    <div class="question-image" style="display: none; margin-bottom: 15px;"></div>
+                    <div class="answer-area"></div>
+                    <div id="q8Result" style="display: none;" class="answer-display"></div>
+                </div>
+            </div>
+
+            <!-- 关卡完成页面 -->
+            <div id="challengeComplete" style="display: none;">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 80px; margin-bottom: 20px;">💎</div>
+                    <h2 style="font-size: 28px; color: var(--primary-green); margin-bottom: 15px;">关卡完成！</h2>
+                    <p style="font-size: 18px; color: #666; margin-bottom: 15px;">
+                        你收集了 <span id="correctCount">0</span> 颗周长宝石！
+                    </p>
+                    <div style="font-size: 48px; margin-bottom: 15px;" id="starRating">⭐⭐⭐</div>
+                    <div id="levelReward" style="margin-bottom: 20px;"></div>
+                    <div class="btn-group center">
+                        <button class="btn btn-secondary" onclick="backToLevelSelect()">返回地图</button>
+                        <button class="btn btn-primary" id="nextLevelBtn" onclick="nextLevel()">下一关</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成就页 -->
+        <div id="achievementsPage" style="display: none;">
+            <div class="card">
+                <div class="card-title">
+                    <span>🏅</span>
+                    <span>我的成就</span>
+                </div>
+                <div id="achievementList">
+                    <div class="achievement-badge" id="badge1">
+                        <span>🌟</span>
+                        <span>周长新手</span>
+                    </div>
+                    <div class="achievement-badge" id="badge2">
+                        <span>📚</span>
+                        <span>学习小能手</span>
+                    </div>
+                    <div class="achievement-badge" id="badge3">
+                        <span>🎯</span>
+                        <span>答题高手</span>
+                    </div>
+                    <div class="achievement-badge" id="badge4">
+                        <span>🏆</span>
+                        <span>周长达人</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>📊</span>
+                    <span>学习统计</span>
+                </div>
+                <div style="display: flex; justify-content: space-around; text-align: center;">
+                    <div style="padding: 15px;">
+                        <div style="font-size: 36px; font-weight: bold; color: var(--primary-green);">
+                            <span id="totalAttempts">0</span>
+                        </div>
+                        <div style="font-size: 14px; color: #666;">总答题次数</div>
+                    </div>
+                    <div style="padding: 15px;">
+                        <div style="font-size: 36px; font-weight: bold; color: var(--primary-blue);">
+                            <span id="winStreak">0</span>
+                        </div>
+                        <div style="font-size: 14px; color: #666;">连胜次数</div>
+                    </div>
+                    <div style="padding: 15px;">
+                        <div style="font-size: 36px; font-weight: bold; color: var(--primary-orange);">
+                            <span id="bestScore">0</span>
+                        </div>
+                        <div style="font-size: 14px; color: #666;">最高得分</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>📝</span>
+                    <span>周长公式</span>
+                </div>
+                <div class="step-card">
+                    <h4>💡 正方形周长</h4>
+                    <p>周长 = 边长 × 4</p>
+                </div>
+                <div class="step-card">
+                    <h4>💡 长方形周长</h4>
+                    <p>周长 = (长 + 宽) × 2</p>
+                </div>
+                <div class="step-card">
+                    <h4>💡 通用方法</h4>
+                    <p>把所有边的长度加起来就是周长！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active" id="navExplore" onclick="navigateTo('explore')">
+            <span style="font-size: 28px;">🔍</span>
+            <span>探索</span>
+        </div>
+        <div class="nav-item" id="navChallenge" onclick="navigateTo('challenge')">
+            <span style="font-size: 28px;">🎮</span>
+            <span>闯关</span>
+        </div>
+        <div class="nav-item" id="navAchievements" onclick="navigateTo('achievements')">
+            <span style="font-size: 28px;">🏅</span>
+            <span>成就</span>
+        </div>
+    </div>
+
+    <script>
+        const gameState = {
+            currentLevel: 1,
+            currentQuestion: 1,
+            correctCount: 0,
+            totalAttempts: 0,
+            winStreak: 0,
+            bestScore: 0,
+            achievements: {
+                badge1: true,
+                badge2: false,
+                badge3: false,
+                badge4: false
+            },
+            unlockedLevels: [1],
+            levelStars: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+        };
+
+        const levels = {
+            1: { name: '周长初识', icon: '🏰', questions: 8, theme: '#4CAF50' },
+            2: { name: '正方形秘境', icon: '🏯', questions: 8, theme: '#2196F3' },
+            3: { name: '长方形迷宫', icon: '🏠', questions: 8, theme: '#FF9800' },
+            4: { name: '图形森林', icon: '🌲', questions: 8, theme: '#9C27B0' },
+            5: { name: '宝石神殿', icon: '⭐', questions: 8, theme: '#FF5722' }
+        };
+
+        // 题目数据库
+        const questionBank = {
+            // 第1关：周长初识（概念理解）
+            1: [
+                { type: 'mc', question: '小蚂蚁沿着树叶边缘爬一圈，爬过的总距离就是树叶的什么？', options: ['面积', '周长', '边长'], answer: 2, hint: '周长就是图形一周的长度！' },
+                { type: 'mc', question: '下面哪个选项描述的是周长？', options: ['桌子表面的大小', '绕操场跑一圈的距离', '书本的页数'], answer: 2, hint: '周长是围绕图形边缘的长度！' },
+                { type: 'mc', question: '一个正方形有几条边？', options: ['3条', '4条', '5条'], answer: 2, hint: '正方形有4条相等的边！' },
+                { type: 'mc', question: '长方形有几条长边和几条短边？', options: ['2条长边，2条短边', '3条长边，1条短边', '1条长边，3条短边'], answer: 1, hint: '长方形有2条长边和2条短边！' },
+                { type: 'mc', question: '测量周长需要用到什么工具？', options: ['尺子', '量杯', '秤'], answer: 1, hint: '周长是长度，需要用尺子来测量！' },
+                { type: 'mc', question: '以下哪个图形有周长？', options: ['一条直线', '圆形', '一个点'], answer: 2, hint: '封闭的图形才有周长！' },
+                { type: 'mc', question: '周长的单位是什么？', options: ['平方厘米', '厘米', '立方厘米'], answer: 2, hint: '周长是长度，单位是厘米！' },
+                { type: 'mc', question: '如果一个图形的周长是20厘米，说明绕它一圈是多少？', options: ['20平方厘米', '20厘米', '20立方厘米'], answer: 2, hint: '周长就是绕图形一圈的长度！' }
+            ],
+            // 第2关：正方形秘境（正方形周长）
+            2: [
+                { type: 'calc', question: '一个正方形边长为3厘米，周长是多少厘米？', answer: 12, formula: '正方形周长 = 边长 × 4 = 3 × 4 = 12厘米', hint: '正方形周长 = 边长 × 4' },
+                { type: 'calc', question: '一个正方形边长为5厘米，周长是多少厘米？', answer: 20, formula: '正方形周长 = 边长 × 4 = 5 × 4 = 20厘米', hint: '正方形周长 = 边长 × 4' },
+                { type: 'calc', question: '一个正方形边长为7厘米，周长是多少厘米？', answer: 28, formula: '正方形周长 = 边长 × 4 = 7 × 4 = 28厘米', hint: '正方形周长 = 边长 × 4' },
+                { type: 'calc', question: '一个正方形边长为9厘米，周长是多少厘米？', answer: 36, formula: '正方形周长 = 边长 × 4 = 9 × 4 = 36厘米', hint: '正方形周长 = 边长 × 4' },
+                { type: 'calc', question: '一个正方形边长为10厘米，周长是多少厘米？', answer: 40, formula: '正方形周长 = 边长 × 4 = 10 × 4 = 40厘米', hint: '正方形周长 = 边长 × 4' },
+                { type: 'calc', question: '正方形周长是24厘米，边长是多少厘米？', answer: 6, formula: '正方形边长 = 周长 ÷ 4 = 24 ÷ 4 = 6厘米', hint: '已知周长求边长，用周长除以4！' },
+                { type: 'calc', question: '正方形周长是32厘米，边长是多少厘米？', answer: 8, formula: '正方形边长 = 周长 ÷ 4 = 32 ÷ 4 = 8厘米', hint: '已知周长求边长，用周长除以4！' },
+                { type: 'calc', question: '正方形周长是48厘米，边长是多少厘米？', answer: 12, formula: '正方形边长 = 周长 ÷ 4 = 48 ÷ 4 = 12厘米', hint: '已知周长求边长，用周长除以4！' }
+            ],
+            // 第3关：长方形迷宫（长方形周长）
+            3: [
+                { type: 'calc', question: '长方形长5厘米，宽3厘米，周长是多少厘米？', answer: 16, formula: '长方形周长 = (长 + 宽) × 2 = (5 + 3) × 2 = 16厘米', hint: '长方形周长 = (长 + 宽) × 2' },
+                { type: 'calc', question: '长方形长8厘米，宽4厘米，周长是多少厘米？', answer: 24, formula: '长方形周长 = (长 + 宽) × 2 = (8 + 4) × 2 = 24厘米', hint: '长方形周长 = (长 + 宽) × 2' },
+                { type: 'calc', question: '长方形长10厘米，宽6厘米，周长是多少厘米？', answer: 32, formula: '长方形周长 = (长 + 宽) × 2 = (10 + 6) × 2 = 32厘米', hint: '长方形周长 = (长 + 宽) × 2' },
+                { type: 'calc', question: '长方形长12厘米，宽5厘米，周长是多少厘米？', answer: 34, formula: '长方形周长 = (长 + 宽) × 2 = (12 + 5) × 2 = 34厘米', hint: '长方形周长 = (长 + 宽) × 2' },
+                { type: 'calc', question: '长方形周长是28厘米，长是8厘米，宽是多少厘米？', answer: 6, formula: '宽 = 周长 ÷ 2 - 长 = 28 ÷ 2 - 8 = 6厘米', hint: '已知周长和长，宽 = 周长÷2 - 长！' },
+                { type: 'calc', question: '长方形周长是36厘米，宽是7厘米，长是多少厘米？', answer: 11, formula: '长 = 周长 ÷ 2 - 宽 = 36 ÷ 2 - 7 = 11厘米', hint: '已知周长和宽，长 = 周长÷2 - 宽！' },
+                { type: 'calc', question: '长方形长是宽的2倍，宽是4厘米，周长是多少？', answer: 24, formula: '长 = 4 × 2 = 8厘米，周长 = (8 + 4) × 2 = 24厘米', hint: '先算出长，再算周长！' },
+                { type: 'calc', question: '长方形长比宽多3厘米，宽是5厘米，周长是多少？', answer: 26, formula: '长 = 5 + 3 = 8厘米，周长 = (8 + 5) × 2 = 26厘米', hint: '先算出长，再算周长！' }
+            ],
+            // 第4关：图形森林（不规则图形周长）
+            4: [
+                { type: 'grid', question: '一个由5个小正方形组成的"L"形图形，每个小正方形边长1厘米，周长是多少厘米？', answer: 12, formula: 'L形周长 = 12厘米（数格子边）', hint: '沿着图形边缘数格子边！', image: '<svg width="150" height="150" viewBox="0 0 150 150"><g stroke="black" stroke-width="2" fill="none"><rect x="0" y="0" width="50" height="50"/><rect x="50" y="0" width="50" height="50"/><rect x="100" y="0" width="50" height="50"/><rect x="0" y="50" width="50" height="50"/><rect x="0" y="100" width="50" height="50"/></g></svg>' },
+                { type: 'grid', question: '一个由4个小正方形组成的长条（1×4），每个小正方形边长1厘米，周长是多少厘米？', answer: 10, formula: '长方形周长 = (4 + 1) × 2 = 10厘米', hint: '这其实是一个长方形！', image: '<svg width="200" height="50" viewBox="0 0 200 50"><g stroke="black" stroke-width="2" fill="none"><rect x="0" y="0" width="50" height="50"/><rect x="50" y="0" width="50" height="50"/><rect x="100" y="0" width="50" height="50"/><rect x="150" y="0" width="50" height="50"/></g></svg>' },
+                { type: 'grid', question: '一个长方形由6个边长为1厘米的小正方形拼成，长是3厘米，宽是2厘米，周长是多少厘米？', answer: 10, formula: '长方形周长 = (3 + 2) × 2 = 10厘米', hint: '长方形周长 = (长 + 宽) × 2', image: '<svg width="150" height="100" viewBox="0 0 150 100"><g stroke="black" stroke-width="2" fill="none"><rect x="0" y="0" width="50" height="50"/><rect x="50" y="0" width="50" height="50"/><rect x="100" y="0" width="50" height="50"/><rect x="0" y="50" width="50" height="50"/><rect x="50" y="50" width="50" height="50"/><rect x="100" y="50" width="50" height="50"/></g></svg>' },
+                { type: 'calc', question: '一个三角形三条边分别是5厘米、5厘米、6厘米，周长是多少厘米？', answer: 16, formula: '三角形周长 = 5 + 5 + 6 = 16厘米', hint: '三角形周长 = 三条边相加！', image: '<svg width="160" height="120" viewBox="0 0 160 120"><path d="M80 10 L160 110 L0 110 Z" stroke="black" stroke-width="2" fill="none"/><text x="115" y="65" font-size="14">5cm</text><text x="35" y="65" font-size="14">5cm</text><text x="70" y="118" font-size="14">6cm</text></svg>' },
+                { type: 'calc', question: '一个三角形三条边分别是7厘米、8厘米、9厘米，周长是多少厘米？', answer: 24, formula: '三角形周长 = 7 + 8 + 9 = 24厘米', hint: '三角形周长 = 三条边相加！', image: '<svg width="180" height="120" viewBox="0 0 180 120"><path d="M90 10 L180 110 L0 110 Z" stroke="black" stroke-width="2" fill="none"/><text x="130" y="60" font-size="14">7cm</text><text x="25" y="60" font-size="14">8cm</text><text x="80" y="118" font-size="14">9cm</text></svg>' },
+                { type: 'grid', question: '一个由8个小正方形组成的不规则图形，每个小正方形边长1厘米，周长是多少厘米？', answer: 18, formula: '不规则图形周长 = 18厘米（数格子边）', hint: '仔细数清楚每一条边！', image: '<svg width="200" height="100" viewBox="0 0 200 100"><g stroke="black" stroke-width="2" fill="none"><rect x="0" y="0" width="50" height="50"/><rect x="50" y="0" width="50" height="50"/><rect x="100" y="0" width="50" height="50"/><rect x="150" y="0" width="50" height="50"/><rect x="50" y="50" width="50" height="50"/><rect x="100" y="50" width="50" height="50"/><rect x="150" y="50" width="50" height="50"/><rect x="200" y="50" width="50" height="50"/></g></svg>' },
+                { type: 'mc', question: '两个不同形状的图形，它们的周长可能相等吗？', options: ['不可能', '可能', '不确定'], answer: 2, hint: '周长相等的图形形状可以不同！', image: '<svg width="200" height="100" viewBox="0 0 200 100"><rect x="10" y="20" width="60" height="40" stroke="black" stroke-width="2" fill="none"/><path d="M130 20 L190 40 L170 80 L110 60 Z" stroke="black" stroke-width="2" fill="none"/><text x="25" y="85" font-size="12">周长=200</text><text x="135" y="95" font-size="12">周长=200</text></svg>' },
+                { type: 'mc', question: '把一个正方形分成两个长方形，周长会怎么样？', options: ['不变', '变大', '变小'], answer: 2, hint: '分割后会增加新的边！', image: '<svg width="200" height="120" viewBox="0 0 200 120"><rect x="10" y="10" width="80" height="80" stroke="black" stroke-width="2" fill="none"/><rect x="110" y="10" width="80" height="80" stroke="black" stroke-width="2" fill="none"/><line x1="150" y1="10" x2="150" y2="90" stroke="red" stroke-width="2" stroke-dasharray="4"/><text x="30" y="105" font-size="12">原来的正方形</text><text x="125" y="105" font-size="12">分成两个长方形</text></svg>' }
+            ],
+            // 第5关：宝石神殿（实际应用）
+            5: [
+                { type: 'calc', question: '一个篮球场长28米，宽15米。绕篮球场跑一圈是多少米？', answer: 86, formula: '篮球场周长 = (28 + 15) × 2 = 86米', hint: '篮球场是长方形！' },
+                { type: 'calc', question: '一张书桌长120厘米，宽60厘米，给它做一个桌布边框，需要多长的木条？', answer: 360, formula: '边框长度 = (120 + 60) × 2 = 360厘米', hint: '边框长度就是周长！' },
+                { type: 'calc', question: '奶奶想靠墙围一个长方形菜园，长8米，宽4米（长边靠墙），需要多长的篱笆？', answer: 16, formula: '篱笆长度 = 宽 × 2 + 长（靠墙）= 4 × 2 + 8 = 16米', hint: '长边靠墙不需要围！', image: '<svg width="200" height="160" viewBox="0 0 200 160"><rect x="10" y="10" width="180" height="10" fill="#8B4513" stroke="#5D2E0C" stroke-width="2"/><text x="80" y="8" font-size="12" fill="#8B4513">墙</text><path d="M20 10 L20 90 L180 90 L180 10" stroke="#4CAF50" stroke-width="3" fill="none" stroke-dasharray="6,3"/><text x="85" y="18" font-size="12">8米（靠墙）</text><text x="5" y="55" font-size="12">4米</text><text x="182" y="55" font-size="12">4米</text><text x="80" y="105" font-size="14" fill="#4CAF50">篱笆</text></svg>' },
+                { type: 'calc', question: '一个正方形花坛边长是6米，在它周围围一圈栅栏，需要多少米栅栏？', answer: 24, formula: '栅栏长度 = 6 × 4 = 24米', hint: '正方形周长 = 边长 × 4' },
+                { type: 'calc', question: '一根绳子长40厘米，正好围成一个正方形，这个正方形的边长是多少？', answer: 10, formula: '边长 = 40 ÷ 4 = 10厘米', hint: '正方形边长 = 周长 ÷ 4' },
+                { type: 'calc', question: '用一根36厘米长的铁丝围成一个长方形，长是10厘米，宽是多少？', answer: 8, formula: '宽 = 36 ÷ 2 - 10 = 8厘米', hint: '宽 = 周长 ÷ 2 - 长' },
+                { type: 'calc', question: '一个长方形游泳池长50米，宽25米，小明绕着池边游了2圈，一共游了多少米？', answer: 300, formula: '一圈 = (50 + 25) × 2 = 150米，两圈 = 150 × 2 = 300米', hint: '先算一圈的长度，再乘2！' },
+                { type: 'calc', question: '学校操场是长方形，长100米，宽50米。每天早上跑3圈，一共跑了多少米？', answer: 900, formula: '一圈 = (100 + 50) × 2 = 300米，三圈 = 300 × 3 = 900米', hint: '先算一圈的长度，再乘3！' }
+            ]
+        };
+
+        const fairyHints = {
+            1: '周长就是图形一周的长度，比如绕着操场跑一圈的距离！',
+            2: '正方形有4条相等的边，周长就是边长乘以4哦！',
+            3: '长方形有2条长边和2条短边，周长可以用(长+宽)×2来计算！',
+            4: '数格子算周长时，要沿着图形的边缘数一周有多少个格子边！',
+            5: '篮球场是长方形的，用长方形周长公式就能算出跑一圈的距离！',
+            6: '靠墙围篱笆时，靠墙的那一边不需要围，所以只需要算另外三边！',
+            7: '已知正方形周长求边长，用周长除以4就可以啦！',
+            8: '两个图形周长相等，但形状可以不一样哦！'
+        };
+
+        let wrongAttempts = 0;
+
+        function navigateTo(page) {
+            document.getElementById('explorePage').style.display = 'none';
+            document.getElementById('challengePage').style.display = 'none';
+            document.getElementById('achievementsPage').style.display = 'none';
+            
+            document.getElementById('navExplore').classList.remove('active');
+            document.getElementById('navChallenge').classList.remove('active');
+            document.getElementById('navAchievements').classList.remove('active');
+            
+            document.getElementById(page + 'Page').style.display = 'block';
+            document.getElementById('nav' + page.charAt(0).toUpperCase() + page.slice(1)).classList.add('active');
+            
+            if (page === 'challenge') {
+                showLevelSelect();
+            }
+        }
+
+        function showLevelSelect() {
+            document.getElementById('levelSelect').style.display = 'block';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('challengeComplete').style.display = 'none';
+            updateLevelCards();
+        }
+
+        function updateLevelCards() {
+            for (let i = 1; i <= 5; i++) {
+                const card = document.getElementById('level' + i);
+                if (gameState.unlockedLevels.includes(i)) {
+                    card.classList.remove('locked');
+                    // 更新星星显示
+                    const stars = gameState.levelStars[i];
+                    let starText = '';
+                    for (let j = 1; j <= 3; j++) {
+                        starText += j <= stars ? '⭐' : '☆';
+                    }
+                    card.querySelector('.level-stars').textContent = starText;
+                } else {
+                    card.classList.add('locked');
+                    card.querySelector('.level-stars').textContent = '🔒';
+                }
+            }
+        }
+
+        function startLevel(levelNum) {
+            if (!gameState.unlockedLevels.includes(levelNum)) {
+                alert('🔒 请先完成前面的关卡！');
+                return;
+            }
+            
+            gameState.currentLevel = levelNum;
+            gameState.currentQuestion = 1;
+            gameState.correctCount = 0;
+            wrongAttempts = 0;
+            
+            document.getElementById('levelSelect').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'block';
+            document.getElementById('challengeComplete').style.display = 'none';
+            document.getElementById('questionCard').style.display = 'block';
+            document.getElementById('fairyPopup').style.display = 'none';
+            document.getElementById('fairyHint').style.display = 'none';
+            
+            // 更新关卡信息
+            const level = levels[levelNum];
+            document.getElementById('levelIcon').textContent = level.icon;
+            document.getElementById('levelTitle').textContent = '第' + levelNum + '关：' + level.name;
+            document.getElementById('totalQuestions').textContent = level.questions;
+            
+            // 重置星星
+            document.getElementById('star1').textContent = '⭐';
+            document.getElementById('star2').textContent = '⭐';
+            document.getElementById('star3').textContent = '⭐';
+            
+            // 显示第一道题
+            showQuestion(1);
+            document.getElementById('currentQuestion').textContent = '1';
+            document.getElementById('challengeProgress').style.width = '0%';
+        }
+
+        function showQuestion(questionIndex) {
+            // 隐藏所有题目
+            for (let i = 1; i <= 8; i++) {
+                document.getElementById('q' + i).style.display = 'none';
+                document.getElementById('q' + i + 'Result').style.display = 'none';
+                const input = document.getElementById('q' + i + 'Answer');
+                if (input) input.value = '';
+            }
+            
+            const level = gameState.currentLevel;
+            const question = questionBank[level][questionIndex - 1];
+            const qDiv = document.getElementById('q' + questionIndex);
+            
+            if (question) {
+                // 更新题目标题
+                qDiv.querySelector('.card-title span:last-child').textContent = '第' + questionIndex + '题';
+                
+                // 更新题目内容
+                qDiv.querySelector('.question-content').textContent = question.question;
+                
+                // 显示图片（如果有）
+                const imageArea = qDiv.querySelector('.question-image');
+                if (question.image) {
+                    imageArea.innerHTML = question.image;
+                    imageArea.style.display = 'block';
+                    imageArea.style.textAlign = 'center';
+                } else {
+                    imageArea.innerHTML = '';
+                    imageArea.style.display = 'none';
+                }
+                
+                // 根据题目类型显示不同的答题区域
+                const answerArea = qDiv.querySelector('.answer-area');
+                
+                if (question.type === 'mc') {
+                    // 选择题
+                    answerArea.innerHTML = `
+                        <div class="btn-group center" style="flex-direction: column; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="checkMCAnswer(${questionIndex}, 1)">${question.options[0]}</button>
+                            <button class="btn btn-primary" onclick="checkMCAnswer(${questionIndex}, 2)">${question.options[1]}</button>
+                            <button class="btn btn-secondary" onclick="checkMCAnswer(${questionIndex}, 3)">${question.options[2]}</button>
+                        </div>
+                    `;
+                } else {
+                    // 计算题
+                    answerArea.innerHTML = `
+                        <input type="number" class="number-input" id="q${questionIndex}Answer" placeholder="输入答案">
+                        <div class="btn-group center">
+                            <button class="btn btn-primary" onclick="checkAnswer(${questionIndex})">提交答案</button>
+                        </div>
+                    `;
+                }
+                
+                qDiv.style.display = 'block';
+            }
+        }
+
+        function resetChallenge() {
+            startLevel(gameState.currentLevel);
+        }
+
+        function checkMCAnswer(questionNum, option) {
+            gameState.totalAttempts++;
+            const level = gameState.currentLevel;
+            const question = questionBank[level][questionNum - 1];
+            const isCorrect = (option === question.answer);
+            
+            const resultDiv = document.getElementById('q' + questionNum + 'Result');
+            
+            if (isCorrect) {
+                gameState.correctCount++;
+                gameState.winStreak++;
+                if (gameState.winStreak > gameState.bestScore) {
+                    gameState.bestScore = gameState.winStreak;
+                }
+                resultDiv.innerHTML = '<div class="answer-correct animate-bounce">✅ 答对了！</div>';
+                wrongAttempts = 0;
+            } else {
+                gameState.winStreak = 0;
+                wrongAttempts++;
+                resultDiv.innerHTML = '<div class="answer-wrong">❌ 答案不对哦</div>';
+                
+                // 3次错误显示小精灵提示
+                if (wrongAttempts >= 3) {
+                    showFairyHint(questionNum);
+                }
+            }
+            
+            resultDiv.style.display = 'block';
+            saveGameState();
+            
+            setTimeout(() => {
+                nextQuestion(questionNum);
+            }, 1500);
+        }
+
+        function checkAnswer(questionNum) {
+            const input = document.getElementById('q' + questionNum + 'Answer');
+            const resultDiv = document.getElementById('q' + questionNum + 'Result');
+            const userAnswer = parseInt(input.value);
+            const level = gameState.currentLevel;
+            const question = questionBank[level][questionNum - 1];
+            const correctAnswer = question.answer;
+            const formula = question.formula || '';
+            
+            gameState.totalAttempts++;
+            
+            if (userAnswer === correctAnswer) {
+                gameState.correctCount++;
+                gameState.winStreak++;
+                if (gameState.winStreak > gameState.bestScore) {
+                    gameState.bestScore = gameState.winStreak;
+                }
+                resultDiv.innerHTML = `
+                    <div class="answer-correct animate-bounce">✅ 答对了！</div>
+                    ${formula ? `<div class="answer-info">${formula}</div>` : ''}
+                `;
+                wrongAttempts = 0;
+            } else {
+                gameState.winStreak = 0;
+                wrongAttempts++;
+                resultDiv.innerHTML = `
+                    <div class="answer-wrong">❌ 答案不对哦</div>
+                    <div class="answer-info">正确答案是 ${correctAnswer}${formula ? '，' + formula : ''}</div>
+                `;
+                
+                // 3次错误显示小精灵提示
+                if (wrongAttempts >= 3) {
+                    showFairyHint(questionNum);
+                }
+            }
+            
+            resultDiv.style.display = 'block';
+            saveGameState();
+            
+            setTimeout(() => {
+                nextQuestion(questionNum);
+            }, 2000);
+        }
+
+        function showFairyHint(questionNum) {
+            document.getElementById('fairyMessage').textContent = fairyHints[questionNum] || '再想想看！';
+            document.getElementById('fairyPopup').style.display = 'block';
+            document.getElementById('fairyHint').style.display = 'block';
+        }
+
+        function closeFairyHint() {
+            document.getElementById('fairyPopup').style.display = 'none';
+        }
+
+        function nextQuestion(currentNum) {
+            const totalQuestions = levels[gameState.currentLevel].questions;
+            if (currentNum < totalQuestions) {
+                const nextQuestionNum = currentNum + 1;
+                showQuestion(nextQuestionNum);
+                gameState.currentQuestion = nextQuestionNum;
+                document.getElementById('currentQuestion').textContent = nextQuestionNum;
+                document.getElementById('challengeProgress').style.width = (nextQuestionNum / totalQuestions * 100) + '%';
+            } else {
+                completeChallenge();
+            }
+        }
+
+        function completeChallenge() {
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('challengeComplete').style.display = 'block';
+            document.getElementById('correctCount').textContent = gameState.correctCount;
+            
+            const totalQuestions = levels[gameState.currentLevel].questions;
+            let stars = 0;
+            let starText = '';
+            if (gameState.correctCount >= totalQuestions) { stars = 3; starText = '⭐⭐⭐'; }
+            else if (gameState.correctCount >= totalQuestions * 0.75) { stars = 2; starText = '⭐⭐'; }
+            else if (gameState.correctCount >= totalQuestions * 0.5) { stars = 1; starText = '⭐'; }
+            else { stars = 0; starText = '☆☆☆'; }
+            document.getElementById('starRating').textContent = starText;
+            
+            // 更新关卡星星
+            if (stars > gameState.levelStars[gameState.currentLevel]) {
+                gameState.levelStars[gameState.currentLevel] = stars;
+            }
+            
+            // 解锁下一关
+            const nextLevelNum = gameState.currentLevel + 1;
+            if (nextLevelNum <= 5 && !gameState.unlockedLevels.includes(nextLevelNum)) {
+                gameState.unlockedLevels.push(nextLevelNum);
+                document.getElementById('levelReward').innerHTML = `
+                    <p style="color: #FF9800; font-weight: bold;">🎉 解锁新关卡！第${nextLevelNum}关：${levels[nextLevelNum].name}</p>
+                `;
+                document.getElementById('nextLevelBtn').style.display = 'block';
+            } else if (gameState.currentLevel >= 5) {
+                document.getElementById('levelReward').innerHTML = `
+                    <p style="color: #4CAF50; font-weight: bold;">🏆 恭喜你完成所有关卡！</p>
+                `;
+                document.getElementById('nextLevelBtn').style.display = 'none';
+            } else {
+                document.getElementById('levelReward').innerHTML = '';
+                document.getElementById('nextLevelBtn').style.display = 'block';
+            }
+            
+            if (gameState.correctCount >= 4) gameState.achievements.badge2 = true;
+            if (gameState.correctCount >= 6) gameState.achievements.badge3 = true;
+            if (gameState.correctCount >= 8) gameState.achievements.badge4 = true;
+            
+            saveGameState();
+            updateAchievements();
+        }
+
+        function restartChallenge() {
+            startLevel(gameState.currentLevel);
+        }
+
+        function backToLevelSelect() {
+            showLevelSelect();
+        }
+
+        function nextLevel() {
+            const nextLevelNum = gameState.currentLevel + 1;
+            if (nextLevelNum <= 5) {
+                startLevel(nextLevelNum);
+            }
+        }
+
+        function updateAchievements() {
+            Object.keys(gameState.achievements).forEach(badgeId => {
+                const badge = document.getElementById(badgeId);
+                if (gameState.achievements[badgeId]) {
+                    badge.classList.remove('locked');
+                } else {
+                    badge.classList.add('locked');
+                }
+            });
+            
+            document.getElementById('totalAttempts').textContent = gameState.totalAttempts;
+            document.getElementById('winStreak').textContent = gameState.winStreak;
+            document.getElementById('bestScore').textContent = gameState.bestScore;
+        }
+
+        function saveGameState() {
+            localStorage.setItem('perimeterGameState', JSON.stringify(gameState));
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('perimeterGameState');
+            if (saved) {
+                const savedState = JSON.parse(saved);
+                Object.assign(gameState, savedState);
+                // 确保默认值存在
+                if (!gameState.unlockedLevels) gameState.unlockedLevels = [1];
+                if (!gameState.levelStars) gameState.levelStars = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+                updateAchievements();
+            }
+        }
+
+        // 图形切换函数
+        function showGraph(graphType) {
+            // 隐藏所有图形
+            document.getElementById('graphSquare').style.display = 'none';
+            document.getElementById('graphRectangle').style.display = 'none';
+            document.getElementById('graphTriangle').style.display = 'none';
+            document.getElementById('graphTrapezoid').style.display = 'none';
+            document.getElementById('graphIrregular').style.display = 'none';
+            
+            // 隐藏所有公式
+            document.getElementById('formulaSquare').style.display = 'none';
+            document.getElementById('formulaRectangle').style.display = 'none';
+            document.getElementById('formulaTriangle').style.display = 'none';
+            document.getElementById('formulaTrapezoid').style.display = 'none';
+            document.getElementById('formulaIrregular').style.display = 'none';
+            
+            // 切换按钮样式
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+            
+            // 显示选中的图形和公式
+            document.getElementById('graph' + graphType.charAt(0).toUpperCase() + graphType.slice(1)).style.display = 'block';
+            document.getElementById('formula' + graphType.charAt(0).toUpperCase() + graphType.slice(1)).style.display = 'block';
+            
+            // 设置选中按钮样式
+            event.target.classList.remove('btn-secondary');
+            event.target.classList.add('btn-primary');
+        }
+
+        loadGameState();
+    </script>
+</body>
+</html>
